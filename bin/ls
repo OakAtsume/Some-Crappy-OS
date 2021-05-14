@@ -1,0 +1,6 @@
+num="0"
+	for a in *
+	do
+		((num++))
+		echo "[${num}]: ${a}"
+	done
