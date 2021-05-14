@@ -1,0 +1,62 @@
+source core/output_types.sh
+#system_cast "execute" "Reading(main/user/*)"
+declare -a not_executable
+declare -a executable
+for i in main/user/*; do
+	((num++))
+	if [[ -f "${i}" ]]; then
+		is_file="true"
+		if [[ -x "${i}" ]]; then
+			is_executable="true"
+		else
+			 is_executable="false"
+		fi
+	else
+		printf "${num}: ${i}[Folder]\n"
+	fi
+	#printf "(${num}): ${i} Executable:(${is_executable}) File:(${is_file})\n"
+	if [[ "${is_executable}" == "false" ]]; then
+		system_error "Execute" "(${num}): ${i} Executable:(${is_executable}) File:(${is_file})"
+		not_executable["${num}"]="${i}"
+	else
+		system_cast "Execute" "(${num}): ${i} Executable:(${is_executable}) File:(${is_file})"
+		executable["${num}"]="${i}"
+		export imported='true'
+	fi
+done
+#echo ${executable[@]}
+#echo ${not_executable[@]}
+function mark_everything {
+	in_loop='true'
+	while [[ "${in_loop}" == 'true' ]];
+	do
+		for a in ${not_executable[@]}
+		do
+			system_cast "Not-Executable files" "${a} Is not executable"
+		done 
+		printf "Do you wish to mark everything as Executable(y/n)> "
+		read mark
+		if [[ -z "${mark}" ]]; then 
+			system_error "Input"  "Please enter an option"
+		else
+			mark=${mark^^}
+			case ${mark} in
+				YES|Y|YE)
+					for a in main/user/*
+					do
+						chmod +x ${a} || system_error "executable" "Unable to mark as executable"
+					done
+					export imported='true'
+					in_loop='false';;
+					*)
+					in_loop='false';;
+			esac
+		fi
+	done
+}
+if [[ ! -z "${not_executable[@]}" ]]; then
+	mark_everything
+fi
+unset not_executable
+unset num
+unset executable
