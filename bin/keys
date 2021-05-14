@@ -1,0 +1,16 @@
+escape_char=$(printf "\u1b")
+while :
+do
+	read -rsn1 mode # get 1 character
+	if [[ $mode == $escape_char ]]; then
+			read -rsn2 mode # read 2 more chars
+	fi
+	case $mode in
+			'q') echo "[${0}]Stoped" ; exit ;;
+			'[A') echo "Key_Up" ;;
+			'[B') echo "Key_Down" ;;
+			'[D') echo "Key_Left" ;;
+			'[C') echo "Key_right" ;;
+			*) >&2 echo 'ERR bad input';;
+	esac
+done
