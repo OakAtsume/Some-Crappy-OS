@@ -1,0 +1,2 @@
+printf "Running for $SECONDS\n"
+exit
