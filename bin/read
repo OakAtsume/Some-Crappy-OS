@@ -1,0 +1,34 @@
+
+source core/output_types.sh
+echo "Choose a file: "
+num="0"
+declare -A files
+for i in *
+do
+	((num++))
+	if [[ -f "${i}" ]]; then
+		echo "(${num})> ${i}[Ok]"
+	else
+		echo "(${num})> ${i}[Fail]"
+	fi
+	files[${num}]="${i}"
+done
+printf "option: "
+read file_choosen
+if [[ -z "${file_choosen}" ]]; then
+	system_error "Read" "Canceled"
+else
+	if [[ -d "${files["${file_choosen}"]}" ]];
+	then
+		system_error "Read" "${file_choosen} is a folder!"
+	else
+		num=0
+		#while read y do ((num++)) echo "(${num}): ${y}" done < ${1}
+		while read y
+		do
+		((num++))
+			echo "(${num}): ${y}"
+		done < ${files["${file_choosen}"]}
+		system_cast "Read" "File read!"
+	fi
+fi
