@@ -1,0 +1,3 @@
+function control_c {
+	echo -e "\nControl-C\n"
+}
