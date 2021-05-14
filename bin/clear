@@ -1,0 +1,3 @@
+source core/output_types.sh
+system_cast "Console" "Screen cleared"
+printf "\e[H\e[2J"
